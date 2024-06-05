@@ -28,6 +28,8 @@ class Maze:
             self._seed = random.seed(seed)
         self._create_cells()
         self._break_enterance_and_exit()
+        self._break_walls(0, 0)
+        self._reset_visited_cells()
 
     def _create_cells(self) -> None:
         """create a multidimensional array filled with cells."""
@@ -89,3 +91,61 @@ class Maze:
         self._cells[0][0].draw()
         self._cells[self._num_rows - 1][self._num_cols - 1].has_right_wall = False
         self._cells[self._num_rows - 1][self._num_cols - 1].draw()
+
+    def _break_walls(self, i, j):
+        self._cells[i][j].visited = True
+        while True:
+            to_visit = []
+            if self._cells[i - 1][j]:
+                if self._cells[i - 1][j].visited == False:
+                    to_visit.append("w")
+            if self._cells[i][j + 1]:
+                if self._cells[i][j + 1].visited == False:
+                    to_visit.append("n")
+            if self._cells[i + 1][j]:
+                if self._cells[i + 1][j].visited == False:
+                    to_visit.append("e")
+            if self._cells[i][j - 1]:
+                if self._cells[i][j - 1].visited == False:
+                    to_visit.append("s")
+            if len(to_visit) == 0:
+                return
+            else:
+                if 0 <= i <= self._num_rows and 0 <= j <= self._num_cols:
+                    direction = self._rand_direction(to_visit)
+                    if direction == "w":
+                        self._cells[i][j].has_left_wall = False
+                        self._cells[i - 1][j].has_right_wall = False
+                        self._cells[i][j].draw()
+                        self._cells[i - 1][j].draw()
+                        self._break_walls(i - 1, j)
+                    if direction == "n":
+                        self._cells[i][j].has_top_wall = False
+                        self._cells[i][j + 1].has_bottom_wall = False
+                        self._cells[i][j].draw()
+                        self._cells[i][j + 1].draw()
+                        self._break_walls(i, j + 1)
+                    if direction == "e":
+                        self._cells[i][j].has_right_wall = False
+                        self._cells[i + 1][j].has_left_wall = False
+                        self._cells[i][j].draw()
+                        self._cells[i + 1][j].draw()
+                        self._break_walls(i + 1, j)
+                    if direction == "s":
+                        self._cells[i][j].has_bottom_wall = False
+                        self._cells[i][j - 1].has_top_wall = False
+                        self._cells[i][j].draw()
+                        self._cells[i][j - 1].draw()
+                        self._break_walls(i, j - 1)
+                else:
+                    continue
+
+    def _rand_direction(self, list: list):
+        length = len(list)
+        rand = random.randrange(0, length)
+        return list[rand]
+
+    def _reset_visited_cells(self):
+        for row in self._cells:
+            for col in row:
+                self._cells[row][col].visited = False
