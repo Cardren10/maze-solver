@@ -16,6 +16,7 @@ class Cell:
         has_top_wall: bool,
         has_bottom_wall: bool,
         win: Window = None,
+        visited: bool = False,
     ) -> None:
         self.has_left_wall = has_left_wall
         self.has_right_wall = has_right_wall
@@ -26,6 +27,7 @@ class Cell:
         self._y1 = y1
         self._y2 = y2
         self._win = win
+        self.visited = visited
 
     def draw(self) -> None:
         """Draw the cell in the window."""
