@@ -98,19 +98,16 @@ class Maze:
         self._cells[i][j].visited = True
         while True:
             to_visit = []
-            if self._cells[i - 1][j]:
-                if self._cells[i - 1][j].visited == False:
-                    to_visit.append("w")
-            if self._cells[i][j + 1]:
-                if self._cells[i][j + 1].visited == False:
-                    to_visit.append("n")
-            if self._cells[i + 1][j]:
-                if self._cells[i + 1][j].visited == False:
-                    to_visit.append("e")
-            if self._cells[i][j - 1]:
-                if self._cells[i][j - 1].visited == False:
-                    to_visit.append("s")
+            if (i > 0) and not self._cells[i - 1][j].visited:
+                to_visit.append("w")
+            if (j < self._num_cols - 1) and not self._cells[i][j + 1].visited:
+                to_visit.append("n")
+            if (i < self._num_rows - 1) and not self._cells[i + 1][j].visited:
+                to_visit.append("e")
+            if (j > 0) and not self._cells[i][j - 1].visited:
+                to_visit.append("s")
             if len(to_visit) == 0:
+                self._draw_cell(i, j)
                 return
             else:
                 if 0 <= i <= self._num_rows and 0 <= j <= self._num_cols:
@@ -158,7 +155,7 @@ class Maze:
     def _reset_visited_cells(self):
         for row in self._cells:
             for col in row:
-                self._cells[row][col].visited = False
+                col.visited = False
 
     def solve(self):
         return self._solve_r(0, 0)
@@ -166,15 +163,15 @@ class Maze:
     def _solve_r(self, i, j):
         self._animate()
         self._cells[i][j].visited = True
-        if self._cells[i][j] == self._cells[self._num_rows][self._num_cols]:
+        if self._cells[i][j] == self._cells[self._num_rows - 1][self._num_cols - 1]:
             return True
         if (
-            self._cells[i - 1][j] is not None
+            i > 0
             and self._cells[i - 1][j].visited == False
             and self._cells[i - 1][j].has_right_wall == False
         ):
             # west
-            self._cells[i][j].draw_move([i - 1][j])
+            self._cells[i][j].draw_move(self._cells[i - 1][j])
             self._animate()
             if self._solve_r(i - 1, j) == True:
                 return True
@@ -182,12 +179,12 @@ class Maze:
                 self._cells[i - 1][j].draw_move(self._cells[i][j], True)
                 self._animate()
         if (
-            self._cells[i][j + 1] is not None
+            j < self._num_cols - 1
             and self._cells[i][j + 1].visited == False
             and self._cells[i][j + 1].has_bottom_wall == False
         ):
             # north
-            self._cells[i][j].draw_move([i][j + 1])
+            self._cells[i][j].draw_move(self._cells[i][j + 1])
             self._animate()
             if self._solve_r(i, j + 1) == True:
                 return True
@@ -195,12 +192,12 @@ class Maze:
                 self._cells[i][j + 1].draw_move(self._cells[i][j], True)
                 self._animate()
         if (
-            self._cells[i + 1][j] is not None
+            i < self._num_rows - 1
             and self._cells[i + 1][j].visited == False
             and self._cells[i + 1][j].has_left_wall == False
         ):
             # east
-            self._cells[i][j].draw_move([i + 1][j])
+            self._cells[i][j].draw_move(self._cells[i + 1][j])
             self._animate()
             if self._solve_r(i + 1, j) == True:
                 return True
@@ -208,12 +205,12 @@ class Maze:
                 self._cells[i + 1][j].draw_move(self._cells[i][j], True)
                 self._animate()
         if (
-            self._cells[i][j - 1] is not None
+            j > 0
             and self._cells[i][j - 1].visited == False
             and self._cells[i][j - 1].has_top_wall == False
         ):
             # south
-            self._cells[i][j].draw_move([i][j - 1])
+            self._cells[i][j].draw_move(self._cells[i][j - 1])
             self._animate()
             if self._solve_r(i, j - 1) == True:
                 return True

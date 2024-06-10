@@ -10,13 +10,7 @@ def main():
 
     maze = Maze(10, 10, 12, 8, 30, 30, win)
 
-    # cell = Cell(win, 400, 400, 450, 450, True, True, False, False)
-    # cell.draw()
-    #
-    # cell2 = Cell(win, 400, 350, 450, 400, True, True, True, False)
-    # cell2.draw()
-    #
-    # cell.draw_move(cell2)
+    maze.solve()
 
     win.wait_for_close()
 
